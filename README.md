@@ -10,3 +10,5 @@ Usage: ttsmp3 <text> [-o <outfile>] [-l <lang>] [-g <gender>]
        lang:       accent variable
        gender:     "fm" or "ml" for female or male
 ```
+
+Props to [`vozme.com`](http://vozme.com) for providing the free service.
