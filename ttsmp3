@@ -1,0 +1,77 @@
+#!/usr/bin/env node
+
+var main = function () {
+    var needle = require('needle');
+    var fs = require('fs');
+    var argv = require('yargs')
+        .alias('o', 'outfile').default('o', 'text.mp3')
+        .alias('l', 'lang').default('l', 'en')
+        .alias('g', 'gender').default('g', 'fm')
+        .alias('h', 'help')
+        .alias('v', 'version')
+        .argv;
+
+    var usage = 'Usage: ttsmp3 <text> [-o <outfile>] [-l <lang>] [-g <gender>]\n' +
+                '                     [-v | --version] [-h | --help]\n' +  
+                '\n' +
+                '       text:       input text\n' +
+                '       outfile:    output mp3 file\n' +
+                '       lang:       accent variable\n' +
+                '       gender:     "fm" or "ml" for female or male'; 
+
+    if (argv.v) {
+        var path = require('path');
+        var pkg = require(path.join(__dirname, 'package.json'));
+        console.log(pkg.name + ' is at version ' + pkg.version);
+        return true;
+    }
+
+    if (argv.h) {
+        var path = require('path');
+        var pkg = require(path.join(__dirname, 'package.json'));
+        console.log(pkg.name + ': ' + pkg.description + '\n');
+        console.log(usage);
+        return true;
+    }
+
+    if (argv._.length != 1) {
+        if (argv._.length == 0) {
+            console.log('Error: could not find <text> variable');
+        }
+        if (argv._.length > 1) {
+            console.log('Error: too many <text> variables');
+        }
+
+        console.log(usage);
+        return false;
+    }
+
+    var base = 'http://vozme.com/';
+    var opts = {
+        text : argv._[0],
+        lang : argv.l,
+        gn : argv.g,
+        interface : 'full'
+    };
+
+    needle.post(base + 'text2voice.php', opts, {}, function(err, resp) {
+        if (err) {
+            console.log('Error: couldn\'t get download link');
+        }
+
+        var url = base + resp.body.split('<source')[1].split('"')[1];
+        needle.get(url, { output : argv.o }, function(err, resp, body) {
+            if (err) {
+                console.log('Error: couldn\'t download mp3');
+                return false;
+            }
+
+            console.log('output ' + argv.o);
+            return true;
+        });
+    });
+
+    return true;
+}
+
+main();
