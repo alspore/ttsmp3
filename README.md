@@ -1,5 +1,6 @@
 # ttsmp3
 A node.js script used to download text-to-speech mp3 files.
+Install with `sudo npm install ttsmp3 -g`.
 
 ```
 Usage: ttsmp3 <text> [-o <outfile>] [-l <lang>] [-g <gender>]
