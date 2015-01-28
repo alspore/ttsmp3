@@ -2,7 +2,6 @@
 
 var main = function () {
     var needle = require('needle');
-    var fs = require('fs');
     var argv = require('yargs')
         .alias('o', 'outfile').default('o', 'text.mp3')
         .alias('l', 'lang').default('l', 'en')
